@@ -17252,10 +17252,13 @@ Once you have performed this implementation, the dataset will be stored in the v
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># For each feature find the data points with extreme high or low values</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Keep outlier indices in a list and examine after looping thru the features</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># For each feature find the data points with extreme high or low values</span>
 <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">log_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     
     <span class="c1"># TODO: Calculate Q1 (25th percentile of the data) for the given feature</span>
@@ -17271,8 +17274,21 @@ Once you have performed this implementation, the dataset will be stored in the v
     <span class="k">print</span> <span class="s2">&quot;Data points considered outliers for the feature &#39;{}&#39;:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">log_data</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">log_data</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="n">step</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">log_data</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">Q3</span> <span class="o">+</span> <span class="n">step</span><span class="p">))])</span>
     
+    <span class="c1"># Gather the indexes of all the outliers</span>
+    <span class="n">idx</span> <span class="o">+=</span> <span class="n">log_data</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">log_data</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">Q1</span> <span class="o">-</span> <span class="n">step</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">log_data</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">Q3</span> <span class="o">+</span> <span class="n">step</span><span class="p">))]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    
+<span class="c1"># look at the outlier points now stored in idx</span>
+<span class="k">print</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;The below data points are outliers in multiple features:&quot;</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span> <span class="k">if</span> <span class="n">idx</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">})</span>
+<span class="k">print</span> <span class="n">a</span>
+
+<span class="c1"># remove the extras in idx</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+    <span class="n">idx</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    
 <span class="c1"># OPTIONAL: Select the indices for data points you wish to remove</span>
-<span class="n">outliers</span>  <span class="o">=</span> <span class="p">[</span><span class="mi">38</span><span class="p">,</span><span class="mi">57</span><span class="p">,</span><span class="mi">65</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">75</span><span class="p">,</span><span class="mi">81</span><span class="p">,</span><span class="mi">86</span><span class="p">,</span><span class="mi">95</span><span class="p">,</span><span class="mi">96</span><span class="p">,</span><span class="mi">98</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">128</span><span class="p">,</span><span class="mi">137</span><span class="p">,</span><span class="mi">142</span><span class="p">,</span><span class="mi">145</span><span class="p">,</span><span class="mi">154</span><span class="p">,</span><span class="mi">161</span><span class="p">,</span><span class="mi">171</span><span class="p">,</span><span class="mi">175</span><span class="p">,</span><span class="mi">183</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">187</span><span class="p">,</span><span class="mi">193</span><span class="p">,</span><span class="mi">203</span><span class="p">,</span><span class="mi">218</span><span class="p">,</span><span class="mi">233</span><span class="p">,</span><span class="mi">264</span><span class="p">,</span><span class="mi">285</span><span class="p">,</span><span class="mi">289</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">305</span><span class="p">,</span><span class="mi">325</span><span class="p">,</span><span class="mi">338</span><span class="p">,</span><span class="mi">343</span><span class="p">,</span><span class="mi">353</span><span class="p">,</span><span class="mi">355</span><span class="p">,</span><span class="mi">356</span><span class="p">,</span><span class="mi">357</span><span class="p">,</span><span class="mi">412</span><span class="p">,</span><span class="mi">420</span><span class="p">,</span><span class="mi">429</span><span class="p">,</span><span class="mi">439</span><span class="p">]</span>
+<span class="n">outliers</span>  <span class="o">=</span> <span class="n">idx</span>
 
 <span class="c1"># Remove the outliers, if any were specified</span>
 <span class="n">good_data</span> <span class="o">=</span> <span class="n">log_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">log_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">outliers</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
@@ -17904,6 +17920,15 @@ Once you have performed this implementation, the dataset will be stored in the v
 
 </div>
 
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[38, 57, 65, 65, 66, 66, 75, 75, 81, 86, 95, 96, 98, 109, 128, 128, 137, 142, 145, 154, 154, 154, 161, 171, 175, 183, 184, 187, 193, 203, 218, 233, 264, 285, 289, 304, 305, 325, 338, 343, 353, 355, 356, 357, 412, 420, 429, 439]
+The below data points are outliers in multiple features:
+[65, 66, 75, 128, 154]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -17923,7 +17948,7 @@ Once you have performed this implementation, the dataset will be stored in the v
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Answer: Yes, there are. I think that removing those points from the data set could potentially be bad in some situations - if a point is an outlier in multiple features there could actually be an important relationship there. Most of the data seems to be smaller customers, and if we completely delete all the larger customers from the data, we'd lose some potential to estimate their spending habits. However, there are only five such cases in the above data. I have removed all of the above points in order to help keep the algorithm focused on the most representative points.</p>
+<p>Answer: Yes, there are. I think that removing those points from the data set could potentially be bad in some situations - if a point is an outlier in multiple features there could actually be an important relationship there. Most of the data seems to be smaller customers, and if we completely delete all the larger customers from the data, we'd lose some potential to estimate their spending habits. However, there are only five such cases in the above data, and therefore unlikely to cause a big issue by removing them. I have removed all of the above points in order to help keep the algorithm focused on the most representative points.</p>
 
 </div>
 </div>
@@ -17955,7 +17980,7 @@ Once you have performed this implementation, the dataset will be stored in the v
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Apply PCA by fitting the good data with the same number of dimensions as features</span>
@@ -18441,7 +18466,7 @@ TkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display sample log-data after having a PCA transformation applied</span>
@@ -18529,7 +18554,7 @@ TkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Apply PCA by fitting the good data with only two dimensions</span>
@@ -18563,7 +18588,7 @@ TkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display sample log-data after applying PCA transformation in two dimensions</span>
@@ -18630,7 +18655,7 @@ TkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create a biplot</span>
@@ -18645,11 +18670,11 @@ TkSuQmCC
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[19]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x206786a0&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x20a56048&gt;</pre>
 </div>
 
 </div>
@@ -19761,7 +19786,7 @@ AAAUSQwBAABFEkMAAECRxBAAAFAkMQQAABTpG1tA65xjL52WAAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Apply your clustering algorithm of choice to the reduced data </span>
@@ -19840,7 +19865,7 @@ AAAUSQwBAABFEkMAAECRxBAAAFAkMQQAABTpG1tA65xjL52WAAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display the results of the clustering from implementation</span>
@@ -20654,7 +20679,7 @@ ED8AAEAhiB8AAKAQxA8AAFAI4gcAACiE/wMUr6IgN3EiowAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># TODO: Inverse transform the centers</span>
@@ -20871,12 +20896,14 @@ ED8AAEAhiB8AAKAQxA8AAFAI4gcAACiE/wMUr6IgN3EiowAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Display the predictions</span>
+<span class="n">samples_proba</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">pca_samples</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sample_preds</span><span class="p">):</span>
-    <span class="k">print</span> <span class="s2">&quot;Sample point&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;predicted to be in Cluster&quot;</span><span class="p">,</span> <span class="n">pred</span>
+    <span class="k">print</span> <span class="s2">&quot;Sample point&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;predicted to be in Cluster {} ({:.2f}%)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">samples_proba</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pred</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
     
 <span class="c1"># check if samples&#39; spending closer to segment 0 or 1</span>
 <span class="n">df_diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">samples</span><span class="o">-</span><span class="n">true_centers</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">samples</span><span class="o">-</span><span class="n">true_centers</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
@@ -20899,9 +20926,9 @@ ED8AAEAhiB8AAKAQxA8AAFAI4gcAACiE/wMUr6IgN3EiowAAAABJRU5ErkJggg==
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Sample point 0 predicted to be in Cluster 1
-Sample point 1 predicted to be in Cluster 0
-Sample point 2 predicted to be in Cluster 0
+<pre>Sample point 0 predicted to be in Cluster 1 (70.50%)
+Sample point 1 predicted to be in Cluster 0 (100.00%)
+Sample point 2 predicted to be in Cluster 0 (97.58%)
 </pre>
 </div>
 </div>
@@ -21223,7 +21250,7 @@ BBB8AAgg+AAQQPABIIDgA0AAwQeAAB+Yf/dExqjCOAAAAABJRU5ErkJggg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Answer: This actually fits fairly closely with my initial thoughts!</p>
-<p>0 - Up above, I thought the first sample point was likely to be a large marketplace/retailer. The high spending across the board likely helped cluster it here.</p>
+<p>0 - Up above, I thought the first sample point was likely to be a large marketplace/retailer. The high spending across the board likely helped cluster it here. This does have a little lower probability of being in this cluster than the others, however, so there's potential for it being in Cluster 0 (although still 70.5% probability of being in Cluster 1).</p>
 <p>1 - I thought the next sample point was likely to be big on Fresh product, like an open air market or a certain retailer known specifically for fresh product as opposed to normal grocery affair. The high Fresh score certainly contributed to it being here. It looks like per the above that every single category was predicted to fit more into Cluster 0.</p>
 <p>2 - The final sample point, which I originally thought to be a cafe or deli, certainly fits into Cluster 0. It's spending is much lower, so it seems to fit in well with this cluster. Interestingly enough, it does have a few factors that make it seem close to Cluster 1 as well, as shown above.</p>
 
